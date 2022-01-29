@@ -1,34 +1,47 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { selectors, actions } from 'redux/phonebook';
+import { Grid } from 'react-loader-spinner';
+import { useTheme } from '@emotion/react';
+import { useGetContactsQuery } from 'services/contactsAPI';
 
-import { List, ListItem, Text, ItemBtn } from './ContactList.styled';
+import { ContactListItem } from '../contactListItem/ContactListItem';
+import { List } from './ContactList.styled';
 
 const ContactList = () => {
-  const contacts = useSelector(selectors.getContacts);
+  const theme = useTheme();
+  // const contacts = useSelector(selectors.getContacts);
   const filter = useSelector(selectors.getFilter);
   const dispatch = useDispatch();
 
-  const normalizedFilter = filter.toLowerCase();
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(normalizedFilter),
-  );
+  const {
+    data: contacts,
+    error,
+    isLoading,
+    isFetching,
+  } = useGetContactsQuery();
+
+  // const normalizedFilter = filter.toLowerCase();
+  // const filteredContacts = contacts.filter(contact =>
+  //   contact.name.toLowerCase().includes(normalizedFilter),
+  // );
 
   return (
-    <List>
-      {filteredContacts.map(contact => (
-        <ListItem key={contact.id}>
-          <Text>
-            {contact.name}: {contact.number}
-          </Text>
-          <ItemBtn
-            type="button"
-            onClick={() => dispatch(actions.delContact(contact.id))}
-          >
-            Delete
-          </ItemBtn>
-        </ListItem>
-      ))}
-    </List>
+    <>
+      {isFetching && (
+        <Grid
+          ariaLabel="loading-indicator"
+          color={`${theme.colors.primary}`}
+          wrapperStyle={theme.loader}
+        />
+      )}
+      {contacts && (
+        <List>
+          {contacts.map(contact => (
+            <ContactListItem key={contact.id} {...contact} />
+          ))}
+        </List>
+      )}
+    </>
   );
 };
 

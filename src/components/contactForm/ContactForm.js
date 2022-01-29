@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectors, actions } from 'redux/phonebook';
 import {
+  useGetContactsQuery,
+  useAddContactMutation,
+} from 'services/contactsAPI';
+
+import {
   FormContacts,
   InputLabel,
   FormInput,
@@ -13,6 +18,11 @@ const ContactForm = () => {
   const [number, setNumber] = useState('');
   const contacts = useSelector(selectors.getContacts);
   const dispatch = useDispatch();
+
+  const [
+    addContact, // This is the mutation trigger
+    { isLoading }, // This is the destructured mutation result
+  ] = useAddContactMutation();
 
   const handleNameChange = event => {
     const { name, value } = event.currentTarget;
@@ -55,7 +65,7 @@ const ContactForm = () => {
       return;
     }
 
-    dispatch(actions.addContact({ name, number }));
+    addContact({ name, phone: number });
     ressetForm();
   };
 
@@ -86,7 +96,9 @@ const ContactForm = () => {
           required
         />
       </InputLabel>
-      <FormButton type="submit">Add contact</FormButton>
+      <FormButton type="submit" disabled={isLoading}>
+        {isLoading ? 'Adding...' : 'Add contact'}
+      </FormButton>
     </FormContacts>
   );
 };

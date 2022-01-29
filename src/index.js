@@ -7,6 +7,7 @@ import { store } from 'redux/store';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from 'constants/theme';
 import 'index.css';
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import App from 'App';
 
 ReactDOM.render(
