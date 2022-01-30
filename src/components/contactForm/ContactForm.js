@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectors, actions } from 'redux/phonebook';
 import {
   useGetContactsQuery,
   useAddContactMutation,
@@ -16,13 +14,9 @@ import {
 const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const contacts = useSelector(selectors.getContacts);
-  const dispatch = useDispatch();
 
-  const [
-    addContact, // This is the mutation trigger
-    { isLoading }, // This is the destructured mutation result
-  ] = useAddContactMutation();
+  const { data: contacts, error } = useGetContactsQuery();
+  const [addContact, { isLoading }] = useAddContactMutation();
 
   const handleNameChange = event => {
     const { name, value } = event.currentTarget;
@@ -52,7 +46,7 @@ const ContactForm = () => {
     return contacts.some(contact => {
       return (
         contact.name.toLowerCase().replace(/\s+/g, '') === normalizedName ||
-        contact.number.replace(/\D/g, '') === normalizedNumber
+        contact.phone.replace(/\D/g, '') === normalizedNumber
       );
     });
   };

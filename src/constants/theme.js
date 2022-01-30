@@ -11,4 +11,9 @@ export const theme = Object.freeze({
     justifyContent: 'center',
     marginTop: '2rem',
   },
+
+  btnLoader: {
+    justifyContent: 'center',
+    alignIitems: 'center',
+  },
 });
