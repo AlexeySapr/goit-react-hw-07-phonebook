@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import toast, { Toaster } from 'react-hot-toast';
 import { selectors } from 'redux/phonebook';
 import { useGetContactsQuery } from 'services/contactsAPI';
 
@@ -18,16 +20,16 @@ const ContactList = () => {
     );
   }
 
+  useEffect(() => {
+    if (error) {
+      toast.error(`Сan't get contacts info from server`);
+    }
+  }, [error]);
+
   return (
     <>
-      {/* {isFetching && (
-        <Grid
-          ariaLabel="loading-indicator"
-          color={`${theme.colors.primary}`}
-          wrapperStyle={theme.loader}
-        />
-      )} */}
-      {contacts && (
+      {error && <Toaster />}
+      {!error && contacts && (
         <List>
           {filteredContacts.map(contact => (
             <ContactListItem key={contact.id} {...contact} />

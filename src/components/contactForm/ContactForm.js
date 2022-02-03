@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import {
   useGetContactsQuery,
   useAddContactMutation,
@@ -15,7 +16,7 @@ const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const { data: contacts, error } = useGetContactsQuery();
+  const { data: contacts } = useGetContactsQuery();
   const [addContact, { isLoading }] = useAddContactMutation();
 
   const handleNameChange = event => {
@@ -50,12 +51,14 @@ const ContactForm = () => {
       );
     });
   };
-
   const onSubmit = event => {
     event.preventDefault();
 
     if (isInContacts({ name, number })) {
-      alert(`${name} is already in contacts`);
+      toast.error('This contact already exists', {
+        duration: 3000,
+        position: 'top-center',
+      });
       return;
     }
 
@@ -77,7 +80,7 @@ const ContactForm = () => {
           required
         />
       </InputLabel>
-
+      <Toaster />
       <InputLabel>
         Number
         <FormInput
