@@ -16,7 +16,7 @@ const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const { data: contacts } = useGetContactsQuery();
+  const { data: contacts, error: contactsError } = useGetContactsQuery();
   const [addContact, { isLoading }] = useAddContactMutation();
 
   const handleNameChange = event => {
@@ -54,6 +54,11 @@ const ContactForm = () => {
   const onSubmit = event => {
     event.preventDefault();
 
+    if (contactsError) {
+      toast.error(`Server not responding`);
+      return;
+    }
+
     if (isInContacts({ name, number })) {
       toast.error('This contact already exists', {
         duration: 3000,
@@ -63,6 +68,7 @@ const ContactForm = () => {
     }
 
     addContact({ name, phone: number });
+    toast.success(`Contact ${name} successfully added`);
     ressetForm();
   };
 
